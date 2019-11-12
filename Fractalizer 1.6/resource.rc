@@ -1,0 +1,127 @@
+#include <windows.h>
+#include "resource.h"
+
+/////////////////////////////////////////////////////////////////////////////
+// Dialog
+
+IDD_TOOLBOX_DLG DIALOG DISCARDABLE 400, 0, 100, 240
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+FONT 8, "MS Sans Serif"
+BEGIN
+	LTEXT 	"W :",-1,11,1,45,8
+	EDITTEXT	IDD_TESTO_W,29,1,52,12,ES_AUTOHSCROLL
+	LTEXT 	"V :",-1,11,15,45,8
+	EDITTEXT	IDD_TESTO_V,29,15,52,12,ES_AUTOHSCROLL
+	LTEXT 	"K :",-1,11,30,45,8
+	EDITTEXT	IDD_TESTO_K,29,30,52,12,ES_AUTOHSCROLL
+	LTEXT 	"Zoom :",-1,11,55,45,8
+	EDITTEXT	IDD_TESTO_ZOOM,29,55,52,12,ES_AUTOHSCROLL
+	LTEXT 	"A :",-1,11,70,45,8
+	EDITTEXT	IDD_TESTO_A,29,70,52,12,ES_AUTOHSCROLL
+	LTEXT 	"B :",-1,11,85,45,8
+	EDITTEXT	IDD_TESTO_B,29,85,52,12,ES_AUTOHSCROLL
+	
+	LTEXT 	"S1 :",-1,11,110,45,8
+	EDITTEXT	IDD_TESTO_S1,29,110,52,12,ES_AUTOHSCROLL
+	LTEXT 	"S2 :",-1,11,125,45,8
+	EDITTEXT	IDD_TESTO_S2,29,125,52,12,ES_AUTOHSCROLL
+	LTEXT 	"S3 :",-1,11,140,45,8
+	EDITTEXT	IDD_TESTO_S3,29,140,52,12,ES_AUTOHSCROLL
+	LTEXT 	"CR :",-1,11,155,45,8
+	EDITTEXT	IDD_TESTO_CR,29,155,52,12,ES_AUTOHSCROLL
+	LTEXT 	"CG :",-1,11,170,45,8
+	EDITTEXT	IDD_TESTO_CG,29,170,52,12,ES_AUTOHSCROLL
+	LTEXT 	"CB :",-1,11,185,45,8
+	EDITTEXT	IDD_TESTO_CB,29,185,52,12,ES_AUTOHSCROLL
+	DEFPUSHBUTTON	"ReDraw",IDD_REDRAW,30,210,40,15, WS_VISIBLE
+
+END
+
+IDD_ABOUT_DLG DIALOG DISCARDABLE 80, 100, 160, 100
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+FONT 8, "MS Sans Serif"
+BEGIN
+	LTEXT 	"Fractalizer v.1.5",-1,40,10,80,8
+	LTEXT       "www.the-blueant.com",-1,40,20,80,8
+	LTEXT		"by Nelli Fabio (c) 2005,2006", -1 ,40,40,120,8
+	DEFPUSHBUTTON "OK",IDD_ABOUT_OK,40,55,35,15, WS_VISIBLE
+	ICON		IDI_BLUEANT,-1,10,10,50,50
+END
+
+IDD_HELP_DLG DIALOG DISCARDABLE 150, 90, 170, 240
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+FONT 8, "MS Sans Serif"
+BEGIN
+	LTEXT 	"Up:    move picture up",-1,10,5,80,8
+	LTEXT 	"Down:  move picture down",-1,10,20,80,8
+	LTEXT 	"Right: move picture left",-1,10,35,80,8
+	LTEXT 	"Left:  move picture right",-1,10,50,80,8
+	LTEXT 	"1: to increase W",-1,10,65,80,8
+	LTEXT 	"2: to decrease W",-1,10,80,80,8
+	LTEXT 	"3: to increase V",-1,10,95,80,8
+	LTEXT 	"4: to decrease V",-1,10,110,80,8
+	LTEXT 	"5: to increase K",-1,10,125,80,8
+	LTEXT 	"6: to decrease K",-1,10,140,80,8
+	LTEXT 	"Z: to zoom in",-1,10,155,80,8
+	LTEXT 	"X: to zoom out",-1,10,170,80,8
+	LTEXT 	"SPACE: change color spectrum",-1,10,195,120,8
+	DEFPUSHBUTTON "OK",IDD_ABOUT_OK,40,220,35,15, WS_VISIBLE
+END
+
+/////////////////////////////////////////////////////////////////////////////
+// Menu
+
+IDR_MAIN_MENU MENU DISCARDABLE 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "E&xit",                       IDM_FILE_EXIT
+	  MENUITEM "Save A&s Bitmap",			IDM_FILE_SAVE
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "&Parameters",                 IDM_VIEW_TOOLBOX, CHECKED
+    END
+    POPUP "F&ractal"
+    BEGIN
+	  MENUITEM "Mandelbrot",			IDM_FRACTAL_MANDEL
+	  MENUITEM "Mandelbrot inv",			IDM_FRACTAL_MANDELINV
+	  MENUITEM "Julia",				IDM_FRACTAL_JULIA
+	  MENUITEM "Julian",				IDM_FRACTAL_JULIAN
+	  MENUITEM "Julia Cubic",			IDM_FRACTAL_JULIACUBIC
+	  MENUITEM "Newton Raphson p=3",		IDM_FRACTAL_NEWTONRAPHSON
+	  MENUITEM "Newton Raphson P=4",		IDM_FRACTAL_NEWTONRAPHSON2
+	  MENUITEM "Newton Raphson P=5",		IDM_FRACTAL_NEWTONRAPHSON3
+	  MENUITEM "Hopalong",				IDM_FRACTAL_HOPALONG
+	  MENUITEM "Quadrup 2",				IDM_FRACTAL_QUADRUP2
+	  MENUITEM "Three Ply",				IDM_FRACTAL_THREEPLY
+    END
+    POPUP "&Color"
+    BEGIN
+        MENUITEM "52",                 		IDM_COLOR_52, CHECKED
+	  MENUITEM "256",					IDM_COLOR_256
+    END
+    POPUP "&Help"
+    BEGIN
+	  MENUITEM "H&elp",				IDM_HELP_HELP
+	  MENUITEM "&About Fractalizer",		IDM_HELP_ABOUT
+    END
+END
+
+/////////////////////////////////////////////////////////////////////////////
+// String Table
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDM_FILE_EXIT           "Closes the application"
+    IDM_VIEW_TOOLBOX        "Toggles the presence and disappearance of the toolbox\nShow/Hide Toolbox"
+    IDM_HELP_ABOUT	    "Author, version, ..."
+END
+ 
+/////////////////////////////////////////////////////////////////////////
+// Icon & Cursor
+
+IDI_RESFUND ICON 		"the-blueant.ico"
+IDI_BLUEANT ICON        "the-blueant.ico"
+IDC_TARGET	CURSOR	"mycursor.cur"	
+

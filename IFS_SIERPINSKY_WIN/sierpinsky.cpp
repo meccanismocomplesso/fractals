@@ -1,0 +1,170 @@
+#include <windows.h>
+#include <stdio.h>
+#include <math.h>
+#include <time.h>
+#include "ico_res.h"
+
+//Dimensioni della WINDOW
+int sw = 450;
+int sh = 450;
+
+float x,y,xnew,ynew;
+int c;
+int i,j,k;
+
+#define LINES 3
+//PARAMETERS
+int dots = 10000;
+//double t = 1.0, b = -1.0, l = -1.0, r = 1.0;
+HDC hdc;
+bool done = false;
+
+#define NC 52 //numero dei colori
+COLORREF colours[NC];
+
+//SIERPINSKY
+static double map[LINES][7] = {
+	{	0.5,	0.0,	0.0,	0.5,	-0.5,	0.5,	0.333},
+	{	0.5,	0.0,	0.0,	0.5,	-0.5,	-0.5,	0.333},
+	{	0.5,	0.0,	0.0,	0.5,	0.5,	-0.5,	0.334}
+};
+
+
+float random()
+{
+	return (rand()%100)*0.01;
+}
+
+void getSpectrum(COLORREF* col)
+{	
+	int bb,rr,gg;
+	float cb,cg,cr;
+	float a1,a2,a3;
+
+	a1 = random();
+	a2 = random();
+	a3 = random();
+
+	cb = 1 + 3 * random();
+	cg = 1 + 3 * random();	
+	cr = 1 + 3 * random();
+	for(int i = 0; i < NC; i++)
+	{
+		float f = i* 1.0/NC;
+		bb = (int) (126 + 126 * sin(cb * 2 * M_PI * (f + a1)));	
+		gg = (int) (126 + 126 * sin(cg * 2 * M_PI * (f + a2)));	
+		rr = (int) (126 + 126 * sin(cr * 2 * M_PI * (f + a3)));
+		col[i] = RGB(rr,gg,bb);
+	}
+}
+
+void draw(HDC hdc)
+{
+	int factor = (int)dots/NC;
+	factor += 1;
+	
+    long i;
+  
+    double u = 0.0, v = 0.0, newu, newv, sum = 0.0, rnd;
+    int l = 0;
+	c = 0;
+	int centerx = (int)(sw *0.5);
+	int centery = (int)(sh *0.5);
+
+    for (i = 1; i <= dots; i++) {
+      rnd = random();
+      l = 0; sum = map[l][6];
+      while ( (rnd > sum) && (l < LINES) ) {
+        l++;
+        sum += map[l][6];
+      }
+      if (l < LINES) {
+        newu = map[l][0] * u + map[l][1] * v;
+        newv = map[l][2] * u + map[l][3] * v;
+        u = newu + map[l][4];
+        v = newv + map[l][5];
+      }
+		int drawx = (int)(u*centery);
+		int drawy = (int)(v*centerx);
+
+		SetPixel(hdc, drawx+centerx, drawy+centery,colours[c]);
+		if(i % factor == 0)
+			c++;
+	}
+}
+
+/* ********************************************************* */
+/* ********************************************************* */
+LRESULT CALLBACK
+MainWndProc (HWND hwnd, UINT nMsg, WPARAM wParam, LPARAM lParam)
+{
+        switch (nMsg)
+        {
+                case WM_CREATE:
+						srand( (unsigned)time( NULL ) );
+						getSpectrum(colours);
+						return 0;
+                        break;
+               
+                case WM_DESTROY:
+                        PostQuitMessage (0);
+                        return 0;
+                        break;
+        
+				case WM_PAINT:
+					if(!done){
+						hdc = GetDC(hwnd);	
+  						draw(hdc);
+						done = true;
+					}
+						//ReleaseDC(hwnd,hdc);
+						return 0;
+						break;
+        }
+        return DefWindowProc (hwnd, nMsg, wParam, lParam);
+}
+
+int STDCALL
+WinMain (HINSTANCE hInst, HINSTANCE hPrev, LPSTR lpCmd, int nShow)
+{
+        HWND         hwndMain;        
+        MSG          msg;             
+        WNDCLASSEX   wndclass;        
+        char*        szMainWndClass = "WinTestWin";                                
+
+        memset (&wndclass, 0, sizeof(WNDCLASSEX));
+        wndclass.lpszClassName = szMainWndClass;
+        wndclass.cbSize = sizeof(WNDCLASSEX);
+        wndclass.style = CS_HREDRAW | CS_VREDRAW;
+        wndclass.lpfnWndProc = MainWndProc;
+        wndclass.hInstance = hInst;
+        wndclass.hIcon = LoadIcon (hInst, MAKEINTRESOURCE(IDI_RESFUND));
+        wndclass.hIconSm = LoadIcon (hInst, MAKEINTRESOURCE(IDI_RESFUND));
+        wndclass.hCursor = LoadCursor (NULL, IDC_ARROW);
+        wndclass.hbrBackground = (HBRUSH) GetStockObject (BLACK_BRUSH);
+        RegisterClassEx (&wndclass);
+    
+        hwndMain = CreateWindow (
+                szMainWndClass,         /* Class name */
+                "Quadrup Two Orbit - The Blue Ant",   /* Caption */
+                WS_OVERLAPPEDWINDOW,    /* Style */
+                CW_USEDEFAULT,          /* Initial x (use default) */
+                CW_USEDEFAULT,          /* Initial y (use default) */
+                sw,              	/* Initial x size */
+                sh,              	/* Initial y size */
+                NULL,                   /* No parent window */
+                NULL,                   /* No menu */
+                hInst,                  /* This program instance */
+                NULL                    /* Creation parameters */
+                );
+        
+        ShowWindow (hwndMain, nShow);
+        UpdateWindow (hwndMain);
+
+        while (GetMessage (&msg, NULL, 0, 0))
+        {
+                TranslateMessage (&msg);
+                DispatchMessage (&msg);
+        }
+        return msg.wParam;
+}
